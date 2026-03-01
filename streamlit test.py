@@ -1,17 +1,23 @@
 import streamlit as st
+import requests
 
-st.title("Hello Streamlit-er 👋")
-st.markdown(
-    """ 
-    This is a playground for you to try Streamlit and have fun. 
+LANGFLOW_API = "https://manjushatambe-llm-ai-agent.hf.space/api/v1/run/f661af48-e3eb-4d8e-9603-43186b6dc444"
 
-    **There's :rainbow[so much] you can build!**
-    
-    We prepared a few examples for you to get started. Just 
-    click on the buttons above and discover what you can do 
-    with Streamlit. 
-    """
-)
+st.title("My Langflow AI App")
 
-if st.button("Send balloons!"):
-    st.balloons()
+user_input = st.text_input("Ask something:")
+
+if st.button("Submit"):
+    payload = {
+        "input_value": user_input,
+        "output_type": "chat",
+        "input_type": "chat"
+    }
+
+    response = requests.post(LANGFLOW_API, json=payload)
+
+    if response.status_code == 200:
+        result = response.json()
+        st.write(result["output"])
+    else:
+        st.error("Something went wrong!")
